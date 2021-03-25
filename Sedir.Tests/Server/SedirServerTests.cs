@@ -13,7 +13,8 @@ namespace Sedir.Tests.Server
             {
                 Port = 6665
             };
-            using ISedirServer server = new SedirServer(configuration);
+            using TestableSedirServer server = new TestableSedirServer();
+            server.ServerConfiguration = configuration;
             server.Run();
             Assert.IsTrue(server.IsRunning);
         }
@@ -22,7 +23,7 @@ namespace Sedir.Tests.Server
         public void SedirServerShouldBeStoppedAfterDisposing()
         {
             ISedirServer server;
-            using (server = new SedirServer())
+            using (server = new TestableSedirServer())
             {
                 server.Run();
             }
@@ -33,21 +34,28 @@ namespace Sedir.Tests.Server
         [Test]
         public void NewSedirServerShouldBeAddedToClusterAsANodeWhenExistingNodeUrlIsGiven()
         {
-            ISedirServer server = new SedirServer(new ServerConfiguration()
+            var config = new ServerConfiguration()
             {
                 Urls = new[]
                 {
                     "127.0.0.1:6665"
                 }
-            });
+            };
+            ISedirServer server = new TestableSedirServer() {ServerConfiguration = config}.Create();
             Assert.AreEqual(server.Role, ServerRole.Node);
         }
 
         [Test]
         public void SedirServerShouldBeLeaderIfConfigurationIsNotGiven()
         {
-            ISedirServer server = new SedirServer();
+            ISedirServer server = new TestableSedirServer();
             Assert.AreEqual(server.Role, ServerRole.Leader);
+        }
+
+        [Test]
+        public void SedirServerShouldHaveATransportationProtocol()
+        {
+            TestableSedirServer sedirServer = new TestableSedirServer();
         }
 
         // [Test]
@@ -72,6 +80,14 @@ namespace Sedir.Tests.Server
         //PUT 127.0.0.1:6665/database/
     }
 
+    public class SedirHttpHandler : TransportationProtocol
+    {
+    }
+
+    public abstract class TransportationProtocol
+    {
+    }
+
     public enum ServerRole
     {
         Node,
@@ -87,8 +103,14 @@ namespace Sedir.Tests.Server
 
     public class SedirServer : ISedirServer
     {
-        public SedirServer(ServerConfiguration configuration = null)
+        private readonly TransportationProtocol _sedirHttpHandler;
+        private readonly ServerConfiguration _configuration;
+
+        public SedirServer(TransportationProtocol sedirHttpHandler, ServerConfiguration configuration = null)
         {
+            _sedirHttpHandler = sedirHttpHandler;
+            _configuration = configuration;
+
             Role = ServerRole.Leader;
 
             if (configuration != null)
