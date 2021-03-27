@@ -1,4 +1,5 @@
 using Moq;
+using Sedir.Server;
 
 namespace Sedir.Tests.Server
 {

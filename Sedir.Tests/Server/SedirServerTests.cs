@@ -1,5 +1,5 @@
-using System;
 using NUnit.Framework;
+using Sedir.Server;
 
 namespace Sedir.Tests.Server
 {
@@ -42,14 +42,14 @@ namespace Sedir.Tests.Server
                 }
             };
             ISedirServer server = new TestableSedirServer() {ServerConfiguration = config}.Create();
-            Assert.AreEqual(server.Role, ServerRole.Node);
+            Assert.AreEqual(server.Role, NodeRole.Node);
         }
 
         [Test]
         public void SedirServerShouldBeLeaderIfConfigurationIsNotGiven()
         {
             ISedirServer server = new TestableSedirServer();
-            Assert.AreEqual(server.Role, ServerRole.Leader);
+            Assert.AreEqual(server.Role, NodeRole.Leader);
         }
 
         [Test]
@@ -78,82 +78,5 @@ namespace Sedir.Tests.Server
         //127.0.0.1:6666/STARTELECTION
 
         //PUT 127.0.0.1:6665/database/
-    }
-
-    public class SedirHttpHandler : TransportationProtocol
-    {
-    }
-
-    public abstract class TransportationProtocol
-    {
-    }
-
-    public enum ServerRole
-    {
-        Node,
-        Leader
-    }
-
-    public interface ISedirServer : IDisposable
-    {
-        void Run();
-        bool IsRunning { get; set; }
-        ServerRole Role { get; set; }
-    }
-
-    public class SedirServer : ISedirServer
-    {
-        private readonly TransportationProtocol _sedirHttpHandler;
-        private readonly ServerConfiguration _configuration;
-
-        public SedirServer(TransportationProtocol sedirHttpHandler, ServerConfiguration configuration = null)
-        {
-            _sedirHttpHandler = sedirHttpHandler;
-            _configuration = configuration;
-
-            Role = ServerRole.Leader;
-
-            if (configuration != null)
-            {
-                if (configuration.Urls.Length > 0)
-                {
-                    Role = ServerRole.Node;
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            IsRunning = false;
-        }
-
-        public void Run()
-        {
-            IsRunning = true;
-        }
-
-        public bool IsRunning { get; set; }
-        public ServerRole Role { get; set; }
-    }
-
-    public interface ISedirHandler<TRequest, TResponse>
-        where TResponse : HandlerResponse
-    {
-        public TResponse Accept(TRequest request);
-    }
-
-    public abstract class HandlerResponse
-    {
-    }
-
-    public class ServerConfiguration
-    {
-        public ServerConfiguration()
-        {
-            Urls = new string[] { };
-        }
-
-        public int Port { get; set; }
-        public string[] Urls { get; set; }
     }
 }

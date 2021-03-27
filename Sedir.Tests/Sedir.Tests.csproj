@@ -17,4 +17,8 @@
       <Folder Include="Client" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Sedir.Server\Sedir.Server.csproj" />
+    </ItemGroup>
+
 </Project>
