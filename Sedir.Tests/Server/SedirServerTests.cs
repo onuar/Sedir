@@ -22,7 +22,7 @@ namespace Sedir.Tests.Server
         [Test]
         public void SedirServerShouldBeStoppedAfterDisposing()
         {
-            ISedirServer server;
+            IRunnableSedirServer server;
             using (server = new TestableSedirServer())
             {
                 server.Run();

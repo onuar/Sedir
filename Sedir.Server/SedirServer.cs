@@ -1,6 +1,6 @@
 namespace Sedir.Server
 {
-    public class SedirServer : ISedirServer
+    public class SedirServer : IRunnableSedirServer
     {
         private readonly TransportationProtocol _sedirHttpHandler;
         private readonly ServerConfiguration _configuration;
@@ -29,6 +29,11 @@ namespace Sedir.Server
         public void Run()
         {
             IsRunning = true;
+        }
+
+        public IRunnableSedirServer Build()
+        {
+            return this;
         }
 
         public bool IsRunning { get; set; }
