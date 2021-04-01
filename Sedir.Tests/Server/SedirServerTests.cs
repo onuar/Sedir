@@ -1,5 +1,7 @@
+using Moq;
 using NUnit.Framework;
 using Sedir.Server;
+using Sedir.Server.Transportation;
 
 namespace Sedir.Tests.Server
 {
@@ -9,12 +11,8 @@ namespace Sedir.Tests.Server
         [Test]
         public void SedirServerShouldBeCreatedAsSingleNode()
         {
-            ServerConfiguration configuration = new ServerConfiguration()
-            {
-                Port = 6665
-            };
-            using TestableSedirServer server = new TestableSedirServer();
-            server.ServerConfiguration = configuration;
+            using TestableSedirServer server = TestableSedirServer.Create();
+            server.Configuration.Object.Port = 6665;
             server.Run();
             Assert.IsTrue(server.IsRunning);
         }
@@ -23,7 +21,7 @@ namespace Sedir.Tests.Server
         public void SedirServerShouldBeStoppedAfterDisposing()
         {
             IRunnableSedirServer server;
-            using (server = new TestableSedirServer())
+            using (server = TestableSedirServer.Create())
             {
                 server.Run();
             }
@@ -34,28 +32,47 @@ namespace Sedir.Tests.Server
         [Test]
         public void NewSedirServerShouldBeAddedToClusterAsANodeWhenExistingNodeUrlIsGiven()
         {
-            var config = new ServerConfiguration()
-            {
-                Urls = new[]
-                {
-                    "127.0.0.1:6665"
-                }
-            };
-            ISedirServer server = new TestableSedirServer() {ServerConfiguration = config}.Create();
+            var handler = new Mock<IRunnableSedirTransportationProtocol>();
+            Mock<ServerConfiguration> config = new Mock<ServerConfiguration>();
+            config.Object.Urls = new[]
+                {"127.0.0.1:6665"};
+
+            TestableSedirServer server = new TestableSedirServer(handler, config);
+
+            server.Configuration = config;
             Assert.AreEqual(server.Role, NodeRole.Node);
         }
 
         [Test]
         public void SedirServerShouldBeLeaderIfConfigurationIsNotGiven()
         {
-            ISedirServer server = new TestableSedirServer();
+            TestableSedirServer server = TestableSedirServer.Create();
             Assert.AreEqual(server.Role, NodeRole.Leader);
         }
 
+
         [Test]
-        public void SedirServerShouldHaveATransportationProtocol()
+        public void SedirServerBuildShouldCallTransportationBuild()
         {
-            TestableSedirServer sedirServer = new TestableSedirServer();
+            Mock<IRunnableSedirTransportationProtocol> handler = new Mock<IRunnableSedirTransportationProtocol>();
+            Mock<ServerConfiguration> config = new Mock<ServerConfiguration>();
+
+            handler.Setup(x => x.Build());
+            TestableSedirServer sedirServer = new TestableSedirServer(handler, config);
+            sedirServer.Build();
+            handler.Verify(x => x.Build(), Times.Once);
+        }
+
+        [Test]
+        public void SedirServerRunShouldCallTransportationRun()
+        {
+            Mock<IRunnableSedirTransportationProtocol> handler = new Mock<IRunnableSedirTransportationProtocol>();
+            Mock<ServerConfiguration> config = new Mock<ServerConfiguration>();
+
+            handler.Setup(x => x.Run());
+            TestableSedirServer sedirServer = new TestableSedirServer(handler, config);
+            sedirServer.Run();
+            handler.Verify(x => x.Run(), Times.Once);
         }
 
         // [Test]

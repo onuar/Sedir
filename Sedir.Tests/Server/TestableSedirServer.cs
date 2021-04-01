@@ -6,17 +6,26 @@ namespace Sedir.Tests.Server
 {
     public class TestableSedirServer : SedirServer
     {
-        public ServerConfiguration ServerConfiguration { get; set; } = new Mock<ServerConfiguration>().Object;
-        public SedirHttpServer SedirHttpServer { get; set; } = new Mock<SedirHttpServer>().Object;
-
-        public TestableSedirServer()
-            : base(new Mock<SedirHttpServer>().Object, new Mock<ServerConfiguration>().Object)
+        public TestableSedirServer(
+            Mock<IRunnableSedirTransportationProtocol> sedirHandler,
+            Mock<ServerConfiguration> configuration)
+            : base(
+                sedirHandler.Object,
+                configuration.Object)
         {
+            SedirHandler = sedirHandler;
+            Configuration = configuration;
         }
 
-        public SedirServer Create()
+        public Mock<IRunnableSedirTransportationProtocol> SedirHandler { get; }
+
+        public Mock<ServerConfiguration> Configuration { get; set; }
+
+        public static TestableSedirServer Create()
         {
-            return new SedirServer(SedirHttpServer, ServerConfiguration);
+            return new TestableSedirServer(
+                new Mock<IRunnableSedirTransportationProtocol>(MockBehavior.Loose),
+                new Mock<ServerConfiguration>(MockBehavior.Loose));
         }
     }
 }

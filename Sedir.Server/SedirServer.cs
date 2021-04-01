@@ -31,7 +31,7 @@ namespace Sedir.Server
 
         public IRunnableSedirServer Build()
         {
-            _sedirHandler.Run();
+            _sedirHandler.Build();
             return this;
         }
 

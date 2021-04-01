@@ -16,10 +16,12 @@ namespace Sedir.Server.Transportation
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<SedirMiddleware>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<SedirMiddleware>();
         }
     }
 }
