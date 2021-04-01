@@ -1,21 +1,22 @@
 using Moq;
 using Sedir.Server;
+using Sedir.Server.Transportation;
 
 namespace Sedir.Tests.Server
 {
     public class TestableSedirServer : SedirServer
     {
         public ServerConfiguration ServerConfiguration { get; set; } = new Mock<ServerConfiguration>().Object;
-        public TransportationProtocol TransportationProtocol { get; set; } = new Mock<TransportationProtocol>().Object;
+        public SedirHttpServer SedirHttpServer { get; set; } = new Mock<SedirHttpServer>().Object;
 
         public TestableSedirServer()
-            : base(new Mock<TransportationProtocol>().Object, new Mock<ServerConfiguration>().Object)
+            : base(new Mock<SedirHttpServer>().Object, new Mock<ServerConfiguration>().Object)
         {
         }
 
         public SedirServer Create()
         {
-            return new SedirServer(TransportationProtocol, ServerConfiguration);
+            return new SedirServer(SedirHttpServer, ServerConfiguration);
         }
     }
 }

@@ -1,13 +1,16 @@
+using Sedir.Server.Transportation;
+
 namespace Sedir.Server
 {
     public class SedirServer : IRunnableSedirServer
     {
-        private readonly TransportationProtocol _sedirHttpHandler;
+        private readonly IRunnableSedirTransportationProtocol _sedirHandler;
         private readonly ServerConfiguration _configuration;
 
-        public SedirServer(TransportationProtocol sedirHttpHandler, ServerConfiguration configuration = null)
+        public SedirServer(IRunnableSedirTransportationProtocol sedirHandler,
+            ServerConfiguration configuration = null)
         {
-            _sedirHttpHandler = sedirHttpHandler;
+            _sedirHandler = sedirHandler;
             _configuration = configuration;
 
             Role = NodeRole.Leader;
@@ -26,14 +29,16 @@ namespace Sedir.Server
             IsRunning = false;
         }
 
-        public void Run()
-        {
-            IsRunning = true;
-        }
-
         public IRunnableSedirServer Build()
         {
+            _sedirHandler.Run();
             return this;
+        }
+
+        public void Run()
+        {
+            _sedirHandler.Run();
+            IsRunning = true;
         }
 
         public bool IsRunning { get; set; }
