@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sedir.Server.Transportation.Routing;
 
 namespace Sedir.Server.Transportation
 {
@@ -16,6 +17,7 @@ namespace Sedir.Server.Transportation
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSedirRouting();
             services.AddTransient<SedirMiddleware>();
         }
 
