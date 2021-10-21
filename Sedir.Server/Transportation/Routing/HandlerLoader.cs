@@ -6,7 +6,7 @@ namespace Sedir.Server.Transportation.Routing
 {
     public static class HandlerLoader
     {
-        public static void AddSedirRouting(this IServiceCollection serviceCollection)
+        public static void AddSedirHandlers(this IServiceCollection serviceCollection)
         {
             var routingType = typeof(IHandler);
             var assembly = Assembly.Load(typeof(IHandler).Assembly.FullName);

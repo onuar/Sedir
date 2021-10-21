@@ -17,7 +17,7 @@ namespace Sedir.Server.Transportation
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSedirRouting();
+            services.AddSedirHandlers();
             services.AddTransient<SedirMiddleware>();
         }
 

@@ -13,7 +13,7 @@ namespace Sedir.Server.Transportation
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"http://localhost:{port}");
+                    webBuilder.UseUrls($"http://127.0.0.1:{port}");
                 });
             return this;
         }

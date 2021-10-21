@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sedir.Server.Transportation;
 
 namespace Sedir.Server
@@ -36,10 +38,40 @@ namespace Sedir.Server
         public void Run()
         {
             _sedirHandler.Run();
+            NotifyOtherNodes();
             IsRunning = true;
+        }
+
+        private void NotifyOtherNodes()
+        {
+            if (Role != NodeRole.Leader)
+            {
+                ClusterInfoManager.AddNodes(_configuration.OtherNodeUrls);
+            }
         }
 
         public bool IsRunning { get; set; }
         public NodeRole Role { get; set; }
+    }
+
+    internal class ClusterInfoManager
+    {
+        public static void AddNodes(string[] nodeUrls)
+        {
+            ExtractBaseUrlsAndPorts(nodeUrls);
+        }
+
+        private static List<NodeInfo> ExtractBaseUrlsAndPorts(string[] nodeUrls)
+        {
+            var nodeInfos = nodeUrls.Select(_ => new NodeInfo()
+                {BaseUrl = _.Split(":")[0], Port = Convert.ToInt32(_.Split(":")[1])}).ToList();
+            return nodeInfos;
+        }
+    }
+
+    internal class NodeInfo
+    {
+        public string BaseUrl { get; set; }
+        public int Port { get; set; }
     }
 }
