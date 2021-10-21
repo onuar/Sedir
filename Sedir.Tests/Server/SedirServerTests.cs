@@ -12,7 +12,7 @@ namespace Sedir.Tests.Server
         public void SedirServerShouldBeCreatedAsSingleNode()
         {
             using TestableSedirServer server = TestableSedirServer.Create();
-            server.Configuration.Object.Port = 6665;
+            server.Configuration.Object.NodeRunningPort = 6665;
             server.Run();
             Assert.IsTrue(server.IsRunning);
         }
@@ -34,7 +34,7 @@ namespace Sedir.Tests.Server
         {
             var handler = new Mock<IRunnableSedirTransportationProtocol>();
             Mock<ServerConfiguration> config = new Mock<ServerConfiguration>();
-            config.Object.Urls = new[]
+            config.Object.OtherNodeUrls = new[]
                 {"127.0.0.1:6665"};
 
             TestableSedirServer server = new TestableSedirServer(handler, config);
@@ -57,10 +57,10 @@ namespace Sedir.Tests.Server
             Mock<IRunnableSedirTransportationProtocol> handler = new Mock<IRunnableSedirTransportationProtocol>();
             Mock<ServerConfiguration> config = new Mock<ServerConfiguration>();
 
-            handler.Setup(x => x.Build());
+            handler.Setup(x => x.Build(It.IsAny<int>()));
             TestableSedirServer sedirServer = new TestableSedirServer(handler, config);
             sedirServer.Build();
-            handler.Verify(x => x.Build(), Times.Once);
+            handler.Verify(x => x.Build(It.IsAny<int>()), Times.Once);
         }
 
         [Test]

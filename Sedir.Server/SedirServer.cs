@@ -1,3 +1,4 @@
+using System;
 using Sedir.Server.Transportation;
 
 namespace Sedir.Server
@@ -7,20 +8,17 @@ namespace Sedir.Server
         private readonly IRunnableSedirTransportationProtocol _sedirHandler;
         private readonly ServerConfiguration _configuration;
 
-        public SedirServer(IRunnableSedirTransportationProtocol sedirHandler,
-            ServerConfiguration configuration = null)
+        public SedirServer(
+            IRunnableSedirTransportationProtocol sedirHandler,
+            ServerConfiguration configuration)
         {
-            _sedirHandler = sedirHandler;
-            _configuration = configuration;
+            _sedirHandler = sedirHandler ?? throw new ArgumentNullException("sedirHandler");
+            _configuration = configuration ?? throw new ArgumentNullException("configuration");
 
             Role = NodeRole.Leader;
-
-            if (configuration != null)
+            if (configuration.OtherNodeUrls.Length > 0)
             {
-                if (configuration.Urls.Length > 0)
-                {
-                    Role = NodeRole.Node;
-                }
+                Role = NodeRole.Node;
             }
         }
 
@@ -31,7 +29,7 @@ namespace Sedir.Server
 
         public IRunnableSedirServer Build()
         {
-            _sedirHandler.Build();
+            _sedirHandler.Build(_configuration.NodeRunningPort);
             return this;
         }
 

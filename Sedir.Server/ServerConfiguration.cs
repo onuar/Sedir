@@ -4,10 +4,10 @@ namespace Sedir.Server
     {
         public ServerConfiguration()
         {
-            Urls = new string[] { };
+            OtherNodeUrls = new string[] { };
         }
 
-        public int Port { get; set; }
-        public string[] Urls { get; set; }
+        public int NodeRunningPort { get; set; } = 5001;
+        public string[] OtherNodeUrls { get; set; }
     }
 }

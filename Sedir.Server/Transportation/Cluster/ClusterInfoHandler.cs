@@ -3,7 +3,7 @@ using Sedir.Server.Transportation.Routing;
 
 namespace Sedir.Server.Transportation.Cluster
 {
-    public class ClusterInfoRouting : IRouting
+    public class ClusterInfoHandler : IHandler
     {
         public object Execute(HttpRequest request)
         {

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Sedir.Server.Transportation.Routing
 {
-    public interface IRouting
+    public interface IHandler
     {
         object Execute(HttpRequest request);
         string GetPath();

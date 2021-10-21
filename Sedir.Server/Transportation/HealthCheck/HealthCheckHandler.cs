@@ -3,7 +3,7 @@ using Sedir.Server.Transportation.Routing;
 
 namespace Sedir.Server.Transportation.HealthCheck
 {
-    public class HealthCheckRouting : IRouting
+    public class HealthCheckHandler : IHandler
     {
         public object Execute(HttpRequest request)
         {

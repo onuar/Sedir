@@ -8,9 +8,9 @@ namespace Sedir.ConsoleApp
         static void Main(string[] args)
         {
             var handler = new SedirHttpServer();
-            var config = new ServerConfiguration();
+            var config = new ServerConfiguration() {NodeRunningPort = 5010};
             var server = new SedirServer(handler, config);
-            
+
             server
                 .Build()
                 .Run();

@@ -10,7 +10,7 @@ namespace Sedir.Tests.Server
         public void UrlShouldNotBeNullWhenServerConfigurationIsCreated()
         {
             ServerConfiguration configuration = new ServerConfiguration();
-            Assert.NotNull(configuration.Urls);
+            Assert.NotNull(configuration.OtherNodeUrls);
         }
     }
 }

@@ -19,13 +19,13 @@ namespace Sedir.Server.Transportation
         public Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             GuardForUnnecessaryPaths(context);
-            var routingList = _serviceProvider.GetServices<IRouting>().ToList();
+            var routingList = _serviceProvider.GetServices<IHandler>().ToList();
             var routing = routingList.SingleOrDefault(x => x.GetPath() == context.Request.Path);
 
             if (routing == null)
             {
                 return WriteResponse(context, "404",
-                    new NoRoutingFoundResponse() {Message = $"No routing found for {context.Request.Path}"});
+                    new NoHandlerFoundResponse() {Message = $"No routing found for {context.Request.Path}"});
             }
 
             var responsePayload = routing.Execute(context.Request);
@@ -37,7 +37,7 @@ namespace Sedir.Server.Transportation
             if (context.Request.Path.Equals("/favicon.ico"))
             {
                 return WriteResponse(context, "404",
-                    new NoRoutingFoundResponse() {Message = $"No routing found for {context.Request.Path}"});
+                    new NoHandlerFoundResponse() {Message = $"No routing found for {context.Request.Path}"});
             }
 
             return Task.CompletedTask;

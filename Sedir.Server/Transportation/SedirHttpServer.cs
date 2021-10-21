@@ -7,10 +7,14 @@ namespace Sedir.Server.Transportation
     {
         private IHostBuilder HostBuilder { get; set; }
 
-        public IRunnableSedirTransportationProtocol Build()
+        public IRunnableSedirTransportationProtocol Build(int port)
         {
             HostBuilder = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls($"http://localhost:{port}");
+                });
             return this;
         }
 
